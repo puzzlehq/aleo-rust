@@ -33,6 +33,9 @@ pub use network::*;
 pub mod resolver;
 pub use resolver::*;
 
+pub mod split;
+pub use split::*;
+
 pub mod transfer;
 pub use transfer::*;
 

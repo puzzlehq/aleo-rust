@@ -240,10 +240,12 @@ use snarkvm::{file::Manifest, package::Package};
 pub use snarkvm_types::*;
 
 use anyhow::{anyhow, bail, ensure, Error, Result};
+#[allow(unused_imports)]
 use indexmap::{IndexMap, IndexSet};
 use once_cell::sync::OnceCell;
 use snarkvm_console::program::Entry;
 #[cfg(feature = "full")]
+#[allow(unused_imports)]
 use std::{
     convert::TryInto,
     fs::File,

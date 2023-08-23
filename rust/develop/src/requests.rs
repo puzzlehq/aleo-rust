@@ -42,6 +42,17 @@ pub(crate) struct ExecuteRequest<N: Network> {
     pub peer_url: Option<String>,
 }
 
+/// Request to execute a program
+#[derive(Deserialize, Serialize)]
+#[serde(bound(serialize = "N: Serialize", deserialize = "N: for<'a> Deserialize<'a>"))]
+pub(crate) struct SplitRequest<N: Network> {
+    pub amount_record: Record<N, Plaintext<N>>,
+    pub split_amount: u64,
+    pub private_key: Option<PrivateKey<N>>,
+    pub peer_url: Option<String>,
+    pub password: Option<String>,
+}
+
 /// Request to make transfer of Aleo credits
 #[derive(Deserialize, Serialize)]
 #[serde(bound(serialize = "N: Serialize", deserialize = "N: for<'a> Deserialize<'a>"))]
