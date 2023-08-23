@@ -1,4 +1,4 @@
-FROM rust:1.70-slim-buster
+FROM rust:1.71-slim-buster
 RUN apt-get update -y && apt-get install git -y
 RUN git clone -b testnet3 \
     https://github.com/puzzlehq/aleo-rust.git \
