@@ -15,6 +15,7 @@
 // along with the Aleo SDK library. If not, see <https://www.gnu.org/licenses/>.
 
 use super::*;
+#[allow(unused_imports)]
 use snarkvm::prelude::AleoID;
 
 impl<N: Network> ProgramManager<N> {
