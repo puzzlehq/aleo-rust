@@ -187,6 +187,9 @@ impl<N: Network> Rest<N> {
         let private_key = Self::get_private_key(private_key_ciphertext, request.private_key, request.password.clone())?;
         let mut program_manager = ProgramManager::new(Some(private_key), None, Some(api_client), None).or_reject()?;
 
+        println!("routes.rs/join: Test 2 - private_key");
+        println!("{:?}", private_key);
+
         // Execute the split and return the resulting transaction id
         let transaction_id = spawn_blocking!(program_manager.join(request.record_1, request.record_2, None))?;
 
