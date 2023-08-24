@@ -48,6 +48,8 @@ pub(crate) struct ExecuteRequest<N: Network> {
 pub(crate) struct JoinRequest<N: Network> {
     pub record_1: Record<N, Plaintext<N>>,
     pub record_2: Record<N, Plaintext<N>>,
+    pub fee: u64,
+    pub fee_record: Record<N, Plaintext<N>>,
     pub private_key: Option<PrivateKey<N>>,
     pub peer_url: Option<String>,
     pub password: Option<String>,

@@ -29,8 +29,12 @@ impl<N: Network> ProgramManager<N> {
         &mut self,
         record_1: Record<N, Plaintext<N>>,
         record_2: Record<N, Plaintext<N>>,
+        fee: u64,
+        fee_record: Record<N, Plaintext<N>>,
         password: Option<&str>,
     ) -> Result<String> {
+        ensure!(fee_record.microcredits()? >= fee, "Fee must be greater than the fee specified in the record");
+
         // Specify the network state query
         let query = Query::from(self.api_client.as_ref().unwrap().base_url());
 
@@ -45,7 +49,14 @@ impl<N: Network> ProgramManager<N> {
             let vm = VM::from(store)?;
 
             let inputs = vec![Value::Record(record_1), Value::Record(record_2)];
-            vm.execute(&private_key, ("credits.aleo", "join"), inputs.iter(), None, Some(query), rng)?
+            vm.execute(
+                &private_key,
+                ("credits.aleo", "join"),
+                inputs.iter(),
+                Some((fee_record, fee)),
+                Some(query),
+                rng,
+            )?
         };
 
         self.broadcast_transaction(execution)
