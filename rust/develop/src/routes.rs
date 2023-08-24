@@ -188,7 +188,7 @@ impl<N: Network> Rest<N> {
         let mut program_manager = ProgramManager::new(Some(private_key), None, Some(api_client), None).or_reject()?;
 
         // Execute the split and return the resulting transaction id
-        let transaction_id = spawn_blocking!(program_manager.join(request.record_1, request.record_2, None,))?;
+        let transaction_id = spawn_blocking!(program_manager.join(request.record_1, request.record_2, None))?;
 
         Ok(reply::json(&transaction_id))
     }
