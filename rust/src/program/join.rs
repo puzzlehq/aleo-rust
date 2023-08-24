@@ -37,9 +37,6 @@ impl<N: Network> ProgramManager<N> {
         // Retrieve the private key.
         let private_key = self.get_private_key(password)?;
 
-        println!("join.rs: Test 1 - private_key");
-        println!("{:?}", private_key.to_string());
-
         let execution = {
             let rng = &mut rand::thread_rng();
 
@@ -48,8 +45,6 @@ impl<N: Network> ProgramManager<N> {
             let vm = VM::from(store)?;
 
             let inputs = vec![Value::Record(record_1), Value::Record(record_2)];
-            println!("join.rs: Test 2 - inputs");
-            println!("{:?}", inputs);
             vm.execute(&private_key, ("credits.aleo", "join"), inputs.iter(), None, Some(query), rng)?
         };
 

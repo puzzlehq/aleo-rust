@@ -54,7 +54,6 @@ impl<N: Network> Rest<N> {
             .and(warp::path!("testnet3" / "join"))
             .and(warp::body::content_length_limit(16 * 1024 * 1024))
             .and(warp::body::json())
-            .and(with(self.record_finder.clone()))
             .and(with(self.private_key_ciphertext.clone()))
             .and(with(self.api_client.clone()))
             .and_then(Self::join);
@@ -64,7 +63,6 @@ impl<N: Network> Rest<N> {
             .and(warp::path!("testnet3" / "split"))
             .and(warp::body::content_length_limit(16 * 1024 * 1024))
             .and(warp::body::json())
-            .and(with(self.record_finder.clone()))
             .and(with(self.private_key_ciphertext.clone()))
             .and(with(self.api_client.clone()))
             .and_then(Self::split);
@@ -181,21 +179,13 @@ impl<N: Network> Rest<N> {
     // Join two records into one on the network specified
     async fn join(
         request: JoinRequest<N>,
-        record_finder: RecordFinder<N>,
         private_key_ciphertext: Option<Ciphertext<N>>,
         api_client: AleoAPIClient<N>,
     ) -> Result<impl Reply, Rejection> {
-        println!("JoinRequest.record_1: {:?}", request.record_1);
-        println!("JoinRequest.record_2: {:?}", request.record_2);
-        println!("JoinRequest.private_key: {:?}", request.private_key);
-        println!("routes.rs/join: Test 1 - hello :)");
         // Get API client and private key and create a program manager
         let api_client = Self::get_api_client(api_client, &request.peer_url)?;
         let private_key = Self::get_private_key(private_key_ciphertext, request.private_key, request.password.clone())?;
         let mut program_manager = ProgramManager::new(Some(private_key), None, Some(api_client), None).or_reject()?;
-
-        println!("routes.rs/join: Test 2 - private_key");
-        println!("{:?}", private_key);
 
         // Execute the split and return the resulting transaction id
         let transaction_id = spawn_blocking!(program_manager.join(request.record_1, request.record_2, None))?;
@@ -206,7 +196,6 @@ impl<N: Network> Rest<N> {
     // Split a record in two on the network specified
     async fn split(
         request: SplitRequest<N>,
-        record_finder: RecordFinder<N>,
         private_key_ciphertext: Option<Ciphertext<N>>,
         api_client: AleoAPIClient<N>,
     ) -> Result<impl Reply, Rejection> {
