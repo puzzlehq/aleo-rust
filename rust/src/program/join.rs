@@ -50,7 +50,7 @@ impl<N: Network> ProgramManager<N> {
             let inputs = vec![Value::Record(record_1), Value::Record(record_2)];
             println!("join.rs: Test 2 - inputs");
             println!("{:?}", inputs);
-            vm.execute(&private_key, ("credits.aleo", "Join"), inputs.iter(), None, Some(query), rng)?
+            vm.execute(&private_key, ("credits.aleo", "join"), inputs.iter(), None, Some(query), rng)?
         };
 
         self.broadcast_transaction(execution)

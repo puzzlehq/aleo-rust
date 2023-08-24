@@ -50,7 +50,7 @@ impl<N: Network> ProgramManager<N> {
             let vm = VM::from(store)?;
 
             let inputs = vec![Value::Record(amount_record), Value::from_str(&format!("{}u64", split_amount))?];
-            vm.execute(&private_key, ("credits.aleo", "Split"), inputs.iter(), None, Some(query), rng)?
+            vm.execute(&private_key, ("credits.aleo", "split"), inputs.iter(), None, Some(query), rng)?
         };
 
         self.broadcast_transaction(execution)
