@@ -54,6 +54,7 @@ impl<N: Network> Rest<N> {
             .and(warp::path!("testnet3" / "join"))
             .and(warp::body::content_length_limit(16 * 1024 * 1024))
             .and(warp::body::json())
+            .and(with(self.record_finder.clone()))
             .and(with(self.private_key_ciphertext.clone()))
             .and(with(self.api_client.clone()))
             .and_then(Self::join);
@@ -63,6 +64,7 @@ impl<N: Network> Rest<N> {
             .and(warp::path!("testnet3" / "split"))
             .and(warp::body::content_length_limit(16 * 1024 * 1024))
             .and(warp::body::json())
+            .and(with(self.record_finder.clone()))
             .and(with(self.private_key_ciphertext.clone()))
             .and(with(self.api_client.clone()))
             .and_then(Self::split);
@@ -179,6 +181,7 @@ impl<N: Network> Rest<N> {
     // Join two records into one on the network specified
     async fn join(
         request: JoinRequest<N>,
+        record_finder: RecordFinder<N>,
         private_key_ciphertext: Option<Ciphertext<N>>,
         api_client: AleoAPIClient<N>,
     ) -> Result<impl Reply, Rejection> {
@@ -203,6 +206,7 @@ impl<N: Network> Rest<N> {
     // Split a record in two on the network specified
     async fn split(
         request: SplitRequest<N>,
+        record_finder: RecordFinder<N>,
         private_key_ciphertext: Option<Ciphertext<N>>,
         api_client: AleoAPIClient<N>,
     ) -> Result<impl Reply, Rejection> {
