@@ -39,15 +39,6 @@ impl<N: Network> Rest<N> {
             .and(with(self.api_client.clone()))
             .and_then(Self::execute_program);
 
-        // POST /join
-        let join = warp::post()
-            .and(warp::path!("testnet3" / "join"))
-            .and(warp::body::content_length_limit(16 * 1024 * 1024))
-            .and(warp::body::json())
-            .and(with(self.private_key_ciphertext.clone()))
-            .and(with(self.api_client.clone()))
-            .and_then(Self::join);
-
         // POST /transfer
         let transfer = warp::post()
             .and(warp::path!("testnet3" / "transfer"))
@@ -57,6 +48,15 @@ impl<N: Network> Rest<N> {
             .and(with(self.private_key_ciphertext.clone()))
             .and(with(self.api_client.clone()))
             .and_then(Self::transfer);
+
+        // POST /join
+        let join = warp::post()
+            .and(warp::path!("testnet3" / "join"))
+            .and(warp::body::content_length_limit(16 * 1024 * 1024))
+            .and(warp::body::json())
+            .and(with(self.private_key_ciphertext.clone()))
+            .and(with(self.api_client.clone()))
+            .and_then(Self::join);
 
         // POST /split
         let split = warp::post()
@@ -70,7 +70,7 @@ impl<N: Network> Rest<N> {
         // GET /health
         let health = warp::get().and(warp::path!("health")).map(reply::reply);
 
-        deploy.or(execute).or(join).or(transfer).or(split).or(health)
+        deploy.or(execute).or(transfer).or(join).or(split).or(health)
     }
 }
 
@@ -182,6 +182,10 @@ impl<N: Network> Rest<N> {
         private_key_ciphertext: Option<Ciphertext<N>>,
         api_client: AleoAPIClient<N>,
     ) -> Result<impl Reply, Rejection> {
+        println!("JoinRequest.record_1: {:?}", request.record_1);
+        println!("JoinRequest.record_2: {:?}", request.record_2);
+        println!("JoinRequest.private_key: {:?}", request.private_key);
+        println!("routes.rs/join: Test 1 - hello :)");
         // Get API client and private key and create a program manager
         let api_client = Self::get_api_client(api_client, &request.peer_url)?;
         let private_key = Self::get_private_key(private_key_ciphertext, request.private_key, request.password.clone())?;
