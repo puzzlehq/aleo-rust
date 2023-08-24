@@ -196,7 +196,7 @@ pub mod snarkvm_types {
     pub use snarkvm_console::{
         account::{Address, PrivateKey, Signature, ViewKey},
         network::Testnet3,
-        prelude::{ToBytes, Uniform},
+        prelude::{to_bits::ToBits, ToBytes, Uniform},
         program::{
             Ciphertext,
             EntryType,
@@ -214,7 +214,7 @@ pub mod snarkvm_types {
             Value,
             ValueType,
         },
-        types::Field,
+        types::{Field, Group, U16},
     };
     pub use snarkvm_ledger_block::{Block, Deployment, Execution, Transaction};
     pub use snarkvm_ledger_query::Query;
