@@ -42,7 +42,7 @@ pub(crate) struct ExecuteRequest<N: Network> {
     pub peer_url: Option<String>,
 }
 
-/// Request to execute a program
+/// Request to join two records
 #[derive(Deserialize, Serialize)]
 #[serde(bound(serialize = "N: Serialize", deserialize = "N: for<'a> Deserialize<'a>"))]
 pub(crate) struct JoinRequest<N: Network> {
@@ -53,7 +53,7 @@ pub(crate) struct JoinRequest<N: Network> {
     pub password: Option<String>,
 }
 
-/// Request to execute a program
+/// Request to split a record in two
 #[derive(Deserialize, Serialize)]
 #[serde(bound(serialize = "N: Serialize", deserialize = "N: for<'a> Deserialize<'a>"))]
 pub(crate) struct SplitRequest<N: Network> {
