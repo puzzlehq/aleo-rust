@@ -49,10 +49,28 @@ impl<N: Network> Rest<N> {
             .and(with(self.api_client.clone()))
             .and_then(Self::transfer);
 
+        // POST /join
+        let join = warp::post()
+            .and(warp::path!("testnet3" / "join"))
+            .and(warp::body::content_length_limit(16 * 1024 * 1024))
+            .and(warp::body::json())
+            .and(with(self.private_key_ciphertext.clone()))
+            .and(with(self.api_client.clone()))
+            .and_then(Self::join);
+
+        // POST /split
+        let split = warp::post()
+            .and(warp::path!("testnet3" / "split"))
+            .and(warp::body::content_length_limit(16 * 1024 * 1024))
+            .and(warp::body::json())
+            .and(with(self.private_key_ciphertext.clone()))
+            .and(with(self.api_client.clone()))
+            .and_then(Self::split);
+
         // GET /health
         let health = warp::get().and(warp::path!("health")).map(reply::reply);
 
-        deploy.or(execute).or(transfer).or(health)
+        deploy.or(execute).or(transfer).or(join).or(split).or(health)
     }
 }
 
@@ -154,6 +172,47 @@ impl<N: Network> Rest<N> {
             fee_record,
             None,
         ))?;
+
+        Ok(reply::json(&transaction_id))
+    }
+
+    // Join two records into one on the network specified
+    async fn join(
+        request: JoinRequest<N>,
+        private_key_ciphertext: Option<Ciphertext<N>>,
+        api_client: AleoAPIClient<N>,
+    ) -> Result<impl Reply, Rejection> {
+        // Get API client and private key and create a program manager
+        let api_client = Self::get_api_client(api_client, &request.peer_url)?;
+        let private_key = Self::get_private_key(private_key_ciphertext, request.private_key, request.password.clone())?;
+        let mut program_manager = ProgramManager::new(Some(private_key), None, Some(api_client), None).or_reject()?;
+
+        // Execute the split and return the resulting transaction id
+        let transaction_id = spawn_blocking!(program_manager.join(
+            request.record_1,
+            request.record_2,
+            request.fee,
+            request.fee_record,
+            None
+        ))?;
+
+        Ok(reply::json(&transaction_id))
+    }
+
+    // Split a record in two on the network specified
+    async fn split(
+        request: SplitRequest<N>,
+        private_key_ciphertext: Option<Ciphertext<N>>,
+        api_client: AleoAPIClient<N>,
+    ) -> Result<impl Reply, Rejection> {
+        // Get API client and private key and create a program manager
+        let api_client = Self::get_api_client(api_client, &request.peer_url)?;
+        let private_key = Self::get_private_key(private_key_ciphertext, request.private_key, request.password.clone())?;
+        let mut program_manager = ProgramManager::new(Some(private_key), None, Some(api_client), None).or_reject()?;
+
+        // Execute the split and return the resulting transaction id
+        let transaction_id =
+            spawn_blocking!(program_manager.split(request.amount_record, request.split_amount, None,))?;
 
         Ok(reply::json(&transaction_id))
     }

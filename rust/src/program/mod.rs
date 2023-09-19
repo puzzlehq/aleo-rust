@@ -27,11 +27,17 @@ pub use execute::*;
 pub mod helpers;
 pub use helpers::*;
 
+pub mod join;
+pub use join::*;
+
 pub mod network;
 pub use network::*;
 
 pub mod resolver;
 pub use resolver::*;
+
+pub mod split;
+pub use split::*;
 
 pub mod transfer;
 pub use transfer::*;
